@@ -7,15 +7,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 #region SQL Server Connection
-//builder.Services.AddDbContext<BookShopDbContext>(options =>
-//    options.UseSqlServer(
-//        builder.Configuration.GetConnectionString("SqlServerConnection")));
+builder.Services.AddDbContext<BookShopDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("SqlServerConnection")));
 #endregion
 
 #region PostgreSQL Connection
-builder.Services.AddDbContext<BookShopDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("PostgresConnection")));
+//builder.Services.AddDbContext<BookShopDbContext>(options =>
+//    options.UseNpgsql(
+//        builder.Configuration.GetConnectionString("PostgresConnection")));
 #endregion
 
 
