@@ -18,5 +18,18 @@ namespace BookShop.Web.Controllers
             List<Category> objCategoryList = _db.Categories.ToList();
             return View(objCategoryList);
         }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+        public IActionResult Edit()
+        {
+            return View();
+        }
+        public IActionResult Delete()
+        {
+            return View();
+        }
     }
 }
