@@ -1,4 +1,6 @@
 using BookShop.DataAccess.Data;
+using BookShop.DataAccess.Repository;
+using BookShop.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +19,9 @@ builder.Services.AddDbContext<BookShopDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("PostgresConnection")));
 #endregion
+
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
 
 
 var app = builder.Build();
