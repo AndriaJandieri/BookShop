@@ -2,22 +2,20 @@
 using BookShop.DataAccess.Repository.IRepository;
 using BookShop.Models;
 using Microsoft.AspNetCore.Mvc;
-//using NTier.DataAccess.Data;
-//using NTier.Models;
 
 public class CategoryController : Controller
 {
-    private readonly ICategoryRepository _categoryRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CategoryController(ICategoryRepository db)
+    public CategoryController(IUnitOfWork unitOfWork)
     {
-        _categoryRepository = db;
+        _unitOfWork = unitOfWork;
     }
 
 
     public IActionResult Index()
     {
-        List<Category> objCategoryList = _categoryRepository.GetAll().ToList();
+        List<Category> objCategoryList = _unitOfWork.CategoryRepository.GetAll().ToList();
         return View(objCategoryList);
     }
     #region Create
@@ -41,8 +39,8 @@ public class CategoryController : Controller
 
         if (ModelState.IsValid)
         {
-            _categoryRepository.Add(obj);
-            _categoryRepository.Save();
+            _unitOfWork.CategoryRepository.Add(obj);
+            _unitOfWork.Save();
             //TempData["success"] = $"Category <u><b>{obj.Name}</b></u> created successfully";
             TempData["success"] = "Category created successfully";
             return RedirectToAction("Index", "Category");
@@ -58,7 +56,7 @@ public class CategoryController : Controller
         {
             return NotFound();
         }
-        Category? categoryFromDb = _categoryRepository.Get(u => u.Id == id);
+        Category? categoryFromDb = _unitOfWork.CategoryRepository.Get(u => u.Id == id);
         //Category? categoryFromDb2 = _db.Categories.FirstOrDefault(u => u.Id == id);
         //Category? categoryFromDb3 = _db.Categories.Where(u => u.Id == id).FirstOrDefault();
 
@@ -78,8 +76,8 @@ public class CategoryController : Controller
 
         if (ModelState.IsValid)
         {
-            _categoryRepository.Update(obj);
-            _categoryRepository.Save();
+            _unitOfWork.CategoryRepository.Update(obj);
+            _unitOfWork.Save();
             //TempData["success"] = $"Category <u><b>{OldCategoryName}</b></u> updated to <u><b>{obj.Name}</b></u> successfully";
             TempData["success"] = "Category updated successfully";
             return RedirectToAction("Index", "Category");
@@ -95,7 +93,7 @@ public class CategoryController : Controller
         {
             return NotFound();
         }
-        Category? categoryFromDb = _categoryRepository.Get(u => u.Id == id);
+        Category? categoryFromDb = _unitOfWork.CategoryRepository.Get(u => u.Id == id);
         //Category? categoryFromDb2 = _db.Categories.FirstOrDefault(u => u.Id == id);
         //Category? categoryFromDb3 = _db.Categories.Where(u => u.Id == id).FirstOrDefault();
 
@@ -118,13 +116,13 @@ public class CategoryController : Controller
     [HttpPost, ActionName("Delete")]
     public IActionResult DeletePOST(int? id)
     {
-        Category? obj = _categoryRepository.Get(u => u.Id == id);
+        Category? obj = _unitOfWork.CategoryRepository.Get(u => u.Id == id);
         if (obj == null)
         {
             return NotFound();
         }
-        _categoryRepository.Remove(obj);
-        _categoryRepository.Save();
+        _unitOfWork.CategoryRepository.Remove(obj);
+        _unitOfWork.Save();
         //TempData["success"] = $"Category <u><b>{obj.Name}</b></u> deleted successfully";
         TempData["success"] = "Category deleted successfully";
         return RedirectToAction("Index", "Category");
