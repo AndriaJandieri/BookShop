@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BookShop.Web.Migrations
+namespace BookShopWeb.Migrations
 {
     [DbContext(typeof(BookShopDbContext))]
     [Migration("20251212202712_Init")]
@@ -24,7 +24,7 @@ namespace BookShop.Web.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BookShop.Web.Models.Category", b =>
+            modelBuilder.Entity("BookShopWeb.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
