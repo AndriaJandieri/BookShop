@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookShopWeb", "BookShop.Web\BookShopWeb.csproj", "{832A361B-7E79-4B1D-A08E-2176135AF15A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookShop", "BookShopWeb\BookShopWeb.csproj", "{832A361B-7E79-4B1D-A08E-2176135AF15A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookShop.DataAccess", "BookShop.DataAccess\BookShop.DataAccess.csproj", "{A3E3F716-F9D3-43A2-9AB5-E6FF95833C3C}"
 EndProject
