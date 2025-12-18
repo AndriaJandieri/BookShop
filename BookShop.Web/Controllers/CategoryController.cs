@@ -2,8 +2,6 @@
 using BookShop.DataAccess.Repository.IRepository;
 using BookShop.Models;
 using Microsoft.AspNetCore.Mvc;
-//using NTier.DataAccess.Data;
-//using NTier.Models;
 
 public class CategoryController : Controller
 {
