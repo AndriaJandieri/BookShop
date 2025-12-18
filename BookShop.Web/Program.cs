@@ -20,7 +20,7 @@ builder.Services.AddDbContext<BookShopDbContext>(options =>
         builder.Configuration.GetConnectionString("PostgresConnection")));
 #endregion
 
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 
