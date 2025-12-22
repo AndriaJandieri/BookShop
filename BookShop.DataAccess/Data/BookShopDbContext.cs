@@ -12,10 +12,54 @@ namespace BookShop.DataAccess.Data
         }
 
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            #region Product Seed
+            modelBuilder.Entity<Product>().HasData(
+                new Product
+                {
+                    Id = 1,
+                    Title = "The Great Gatsby",
+                    Description = "A novel written by American author F. Scott Fitzgerald.",
+                    ISBN = "9780743273565",
+                    Author = "F. Scott Fitzgerald",
+                    ListPrice = 15.99m,
+                    Price = 12.99m,
+                    Price50 = 10.99m,
+                    Price100 = 8.99m
+                },
+                 new Product
+                 {
+                     Id = 1,
+                     Title = "The Great Gatsby",
+                     Description = "A novel written by American author F. Scott Fitzgerald.",
+                     ISBN = "9780743273565",
+                     Author = "F. Scott Fitzgerald",
+                     ListPrice = 15.99m,
+                     Price = 12.99m,
+                     Price50 = 10.99m,
+                     Price100 = 8.99m
+                 },
+                  new Product
+                  {
+                      Id = 1,
+                      Title = "The Great Gatsby",
+                      Description = "A novel written by American author F. Scott Fitzgerald.",
+                      ISBN = "9780743273565",
+                      Author = "F. Scott Fitzgerald",
+                      ListPrice = 15.99m,
+                      Price = 12.99m,
+                      Price50 = 10.99m,
+                      Price100 = 8.99m
+                  }
+
+                );
+            #endregion
+
+            #region Category Seed
             modelBuilder.Entity<Category>().HasData(
                 new Category
                 {
@@ -35,6 +79,7 @@ namespace BookShop.DataAccess.Data
                     Name = "History",
                     Description = "Historical books"
                 });
+            #endregion
         }
     }
 }
