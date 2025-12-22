@@ -19,10 +19,25 @@ namespace BookShop.Models
         public string ISBN { get; set; }
         [Required]
         public string Author { get; set; }
+
         [Required]
         [Display(Name = "List Price")]
         [Range(1, 10000)]
-
         public decimal ListPrice { get; set; }
+
+        [Required]
+        [Display(Name = "Price for 1-50")]
+        [Range(1, 10000)]
+        public decimal Price { get; set; }
+
+        [Required]
+        [Display(Name = "Price for 50+")]
+        [Range(1, 10000)]
+        public decimal Price50 { get; set; }
+
+        [Required]
+        [Display(Name = "Price for 100+")]
+        [Range(1, 10000)]
+        public decimal Price100 { get; set; }
     }
 }
