@@ -22,7 +22,9 @@ builder.Services.AddDbContext<BookShopDbContext>(options =>
         builder.Configuration.GetConnectionString("PostgresConnection")));
 #endregion
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<BookShopDbContext>();
+builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<BookShopDbContext>();
+
+builder.Services.AddRazorPages();
 
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -42,9 +44,11 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",
