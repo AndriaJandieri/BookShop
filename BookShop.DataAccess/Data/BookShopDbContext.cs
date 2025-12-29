@@ -1,9 +1,11 @@
 ﻿using BookShop.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookShop.DataAccess.Data
 {
-    public class BookShopDbContext : DbContext
+    public class BookShopDbContext : IdentityDbContext<IdentityUser>
     {
         public BookShopDbContext(DbContextOptions<BookShopDbContext> options)
             : base(options)
@@ -16,7 +18,7 @@ namespace BookShop.DataAccess.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);
 
             #region Category Seed
             modelBuilder.Entity<Category>().HasData(
@@ -54,7 +56,7 @@ namespace BookShop.DataAccess.Data
                     Price50 = 85,
                     Price100 = 80,
                     CategoryId = 1,
-                    ImageUrl=""
+                    ImageUrl = ""
                 },
                 new Product
                 {

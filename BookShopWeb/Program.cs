@@ -1,12 +1,14 @@
 using BookShop.DataAccess.Data;
 using BookShop.DataAccess.Repository;
 using BookShop.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 
 #region SQL Server Connection
 //builder.Services.AddDbContext<BookShopDbContext>(options =>
@@ -19,6 +21,9 @@ builder.Services.AddDbContext<BookShopDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("PostgresConnection")));
 #endregion
+
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<BookShopDbContext>();
+
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
