@@ -25,22 +25,22 @@ namespace BookShop.Models
         [Required]
         [Display(Name = "List Price")]
         [Range(1, 10000)]
-        public decimal ListPrice { get; set; }
+        public double ListPrice { get; set; }
 
         [Required]
         [Display(Name = "Price for 1-50")]
         [Range(1, 10000)]
-        public decimal Price { get; set; }
+        public double Price { get; set; }
 
         [Required]
         [Display(Name = "Price for 50+")]
         [Range(1, 10000)]
-        public decimal Price50 { get; set; }
+        public double Price50 { get; set; }
 
         [Required]
         [Display(Name = "Price for 100+")]
         [Range(1, 10000)]
-        public decimal Price100 { get; set; }
+        public double Price100 { get; set; }
 
         public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
