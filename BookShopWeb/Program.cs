@@ -1,7 +1,9 @@
 using BookShop.DataAccess.Data;
 using BookShop.DataAccess.Repository;
 using BookShop.DataAccess.Repository.IRepository;
+using BookShop.Utility;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,12 +24,15 @@ builder.Services.AddDbContext<BookShopDbContext>(options =>
 //        builder.Configuration.GetConnectionString("PostgresConnection")));
 #endregion
 
-builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<BookShopDbContext>();
+//builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<BookShopDbContext>();
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<BookShopDbContext>();
 
 builder.Services.AddRazorPages();
 
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 
 
