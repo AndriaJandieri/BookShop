@@ -1,11 +1,4 @@
-﻿var dataTable;
-
-//$(document).ready(function () {
-//    loadDataTable();
-//});
-
-
-$(function () {
+﻿$(function () {
     loadDataTable();
 });
 
@@ -55,9 +48,3 @@ function Delete(url) {
         }
     });
 }
-
-var dataTable;
-
-$(document).ready(function () {
-    loadDataTable();
-});

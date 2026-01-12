@@ -6,12 +6,12 @@ function loadDataTable() {
     dataTable = $('#tableData').DataTable({
         "ajax": { url: '/admin/company/getall' },
         "columns": [
-            { data: 'name', "width": "10%" },
-            { data: 'streetaddress', "width": "20%" },
+            { data: 'name', "width": "15%" },
+            { data: 'streetAddress', "width": "15%" },
             { data: 'city', "width": "10%" },
             { data: 'state', "width": "10%" },
-            { data: 'postalcode', "width": "10%" },
-            { data: 'phonenumber', "width": "10%" },
+            { data: 'postalCode', "width": "10%" },
+            { data: 'phoneNumber', "width": "10%" },
             {
                 data: 'id',
                 "render": function (data) {
