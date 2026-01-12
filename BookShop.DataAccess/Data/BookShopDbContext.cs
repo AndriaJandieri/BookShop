@@ -15,13 +15,13 @@ namespace BookShop.DataAccess.Data
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Company> Companies { get; set; }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
             #region Category Seed
             modelBuilder.Entity<Category>().HasData(
                 new Category
@@ -43,7 +43,6 @@ namespace BookShop.DataAccess.Data
                     Description = "Historical books"
                 });
             #endregion
-
             #region Product Seed
             modelBuilder.Entity<Product>().HasData(
                 new Product
@@ -128,6 +127,40 @@ namespace BookShop.DataAccess.Data
                     Price100 = 20,
                     CategoryId = 3,
                     ImageUrl = ""
+                }
+                );
+            #endregion
+            #region Company Seed
+            modelBuilder.Entity<Company>().HasData(
+                new Company
+                {
+                    Id = 1,
+                    Name = "Tech Solutions",
+                    StreetAddress = "123 Tech Street",
+                    City = "Techville",
+                    State = "TS",
+                    PostalCode = "12345",
+                    PhoneNumber = "123-456-7890"
+                },
+                new Company
+                {
+                    Id = 2,
+                    Name = "Business Corp",
+                    StreetAddress = "456 Business Ave",
+                    City = "Businesstown",
+                    State = "BC",
+                    PostalCode = "67890",
+                    PhoneNumber = "987-654-3210"
+                },
+                new Company
+                {
+                    Id = 3,
+                    Name = "Enterprise Inc",
+                    StreetAddress = "789 Enterprise Blvd",
+                    City = "Enterprisecity",
+                    State = "EI",
+                    PostalCode = "11223",
+                    PhoneNumber = "555-123-4567"
                 }
                 );
             #endregion

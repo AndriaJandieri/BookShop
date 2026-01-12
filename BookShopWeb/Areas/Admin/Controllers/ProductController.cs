@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace BookShopWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = SD.Role_Admin)]
+    //[Authorize(Roles = SD.Role_Admin)]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -24,7 +24,7 @@ namespace BookShopWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+            List<Product> objProductList = _unitOfWork.Product.GetAll().ToList();
             return View(objProductList);
         }
         #region Create
@@ -37,7 +37,7 @@ namespace BookShopWeb.Areas.Admin.Controllers
                     Text = i.Name,
                     Value = i.Id.ToString()
                 }),
-                Product = new Product()
+                Company = new Product()
             };
 
             if (id == null || id == 0)
@@ -48,7 +48,7 @@ namespace BookShopWeb.Areas.Admin.Controllers
             else
             {
                 //Update
-                productVM.Product = _unitOfWork.Product.Get(u => u.Id == id);
+                productVM.Company = _unitOfWork.Product.Get(u => u.Id == id);
                 return View(productVM);
             }
 
@@ -65,10 +65,10 @@ namespace BookShopWeb.Areas.Admin.Controllers
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     string productsPath = Path.Combine(wwwRootPath, @"images\products");
 
-                    if (!string.IsNullOrEmpty(productVM.Product.ImageUrl))
+                    if (!string.IsNullOrEmpty(productVM.Company.ImageUrl))
                     {
                         //delete old image
-                        var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
+                        var oldImagePath = Path.Combine(wwwRootPath, productVM.Company.ImageUrl.TrimStart('\\'));
                         if (System.IO.File.Exists(oldImagePath))
                         {
                             System.IO.File.Delete(oldImagePath);
@@ -80,18 +80,18 @@ namespace BookShopWeb.Areas.Admin.Controllers
                         file.CopyTo(fileStream);
                     }
 
-                    productVM.Product.ImageUrl = @"\images\products\" + fileName;
+                    productVM.Company.ImageUrl = @"\images\products\" + fileName;
 
                 }
 
-                if (productVM.Product.Id == 0)
+                if (productVM.Company.Id == 0)
                 {
-                    _unitOfWork.Product.Add(productVM.Product);
+                    _unitOfWork.Product.Add(productVM.Company);
                     TempData["success"] = "Product created successfully";
                 }
                 else
                 {
-                    _unitOfWork.Product.Update(productVM.Product);
+                    _unitOfWork.Product.Update(productVM.Company);
                     TempData["success"] = "Product updated successfully";
                 }
 
