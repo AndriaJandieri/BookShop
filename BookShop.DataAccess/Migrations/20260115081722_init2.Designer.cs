@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookShop.DataAccess.Migrations
 {
     [DbContext(typeof(BookShopDbContext))]
-    [Migration("20260112182618_AddCompanyTable")]
-    partial class AddCompanyTable
+    [Migration("20260115081722_init2")]
+    partial class init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
