@@ -10,7 +10,7 @@ namespace BookShop.Models.ViewModels
 {
     public class ProductVM
     {
-        public Product Company { get; set; }
+        public Product Product { get; set; }
         [ValidateNever]
         public IEnumerable<SelectListItem> CategoryList { get; set; }
     }

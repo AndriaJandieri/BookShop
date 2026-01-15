@@ -37,7 +37,7 @@ namespace BookShopWeb.Areas.Admin.Controllers
                     Text = i.Name,
                     Value = i.Id.ToString()
                 }),
-                Company = new Product()
+                Product = new Product()
             };
 
             if (id == null || id == 0)
@@ -48,7 +48,7 @@ namespace BookShopWeb.Areas.Admin.Controllers
             else
             {
                 //Update
-                productVM.Company = _unitOfWork.Product.Get(u => u.Id == id);
+                productVM.Product = _unitOfWork.Product.Get(u => u.Id == id);
                 return View(productVM);
             }
 
@@ -65,10 +65,10 @@ namespace BookShopWeb.Areas.Admin.Controllers
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     string productsPath = Path.Combine(wwwRootPath, @"images\products");
 
-                    if (!string.IsNullOrEmpty(productVM.Company.ImageUrl))
+                    if (!string.IsNullOrEmpty(productVM.Product.ImageUrl))
                     {
                         //delete old image
-                        var oldImagePath = Path.Combine(wwwRootPath, productVM.Company.ImageUrl.TrimStart('\\'));
+                        var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
                         if (System.IO.File.Exists(oldImagePath))
                         {
                             System.IO.File.Delete(oldImagePath);
@@ -80,18 +80,18 @@ namespace BookShopWeb.Areas.Admin.Controllers
                         file.CopyTo(fileStream);
                     }
 
-                    productVM.Company.ImageUrl = @"\images\products\" + fileName;
+                    productVM.Product.ImageUrl = @"\images\products\" + fileName;
 
                 }
 
-                if (productVM.Company.Id == 0)
+                if (productVM.Product.Id == 0)
                 {
-                    _unitOfWork.Product.Add(productVM.Company);
+                    _unitOfWork.Product.Add(productVM.Product);
                     TempData["success"] = "Product created successfully";
                 }
                 else
                 {
-                    _unitOfWork.Product.Update(productVM.Company);
+                    _unitOfWork.Product.Update(productVM.Product);
                     TempData["success"] = "Product updated successfully";
                 }
 
