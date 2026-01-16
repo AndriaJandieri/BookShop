@@ -25,8 +25,13 @@ namespace BookShopWeb.Areas.Customer.Controllers
         }
         public IActionResult Details(int productId)
         {
-            Product product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category");
-            return View(product);
+            ShoppingCart cartObj = new()
+            {
+                Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category"),
+                Quantity = 1,
+                ProductId = productId
+            };
+            return View(cartObj);
         }
 
         public IActionResult Privacy()
