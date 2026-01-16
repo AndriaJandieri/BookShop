@@ -12,17 +12,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 
-#region SQL Server Connection
-builder.Services.AddDbContext<BookShopDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("SqlServerConnection")));
-#endregion
-
-//#region SQL Server Connection2
+//#region SQL Server Connection
 //builder.Services.AddDbContext<BookShopDbContext>(options =>
 //    options.UseSqlServer(
-//        builder.Configuration.GetConnectionString("SqlServerConnection2")));
+//        builder.Configuration.GetConnectionString("SqlServerConnection")));
 //#endregion
+
+#region SQL Server Connection2
+builder.Services.AddDbContext<BookShopDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("SqlServerConnection2")));
+#endregion
 
 //#region PostgreSQL Connection
 //builder.Services.AddDbContext<BookShopDbContext>(options =>
