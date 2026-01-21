@@ -43,6 +43,8 @@ namespace BookShopWeb.Areas.Customer.Controllers
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
             shoppingCart.ApplicationUserId = userId;
+            shoppingCart.Product = null; //Before adding the cart, clear the navigation property, without that it was not worked and got and error:
+                                         //SqlException: Cannot insert explicit value for identity column in table 'Products' when IDENTITY_INSERT is set to OFF.
 
             ShoppingCart cartFromDb = _unitOfWork.ShoppingCart.Get(
                 u => u.ApplicationUserId == userId && u.ProductId == shoppingCart.ProductId);
@@ -50,7 +52,7 @@ namespace BookShopWeb.Areas.Customer.Controllers
 
             {
                 cartFromDb.Quantity += shoppingCart.Quantity;
-                _unitOfWork.ShoppingCart.Update(shoppingCart);
+                _unitOfWork.ShoppingCart.Update(cartFromDb);
             }
 
             else
@@ -58,7 +60,7 @@ namespace BookShopWeb.Areas.Customer.Controllers
                 _unitOfWork.ShoppingCart.Add(shoppingCart);
 
             }
-
+            TempData["success"] = "Cart updated successfully";
             //_unitOfWork.ShoppingCart.Add(shoppingCart);
             _unitOfWork.Save();
 
