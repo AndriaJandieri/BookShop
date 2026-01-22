@@ -39,6 +39,43 @@ namespace BookShopWeb.Areas.Customer.Controllers
 
 
         }
+
+        public IActionResult Plus(int cartId)
+        {
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+            cartFromDb.Quantity += 1;
+            _unitOfWork.ShoppingCart.Update(cartFromDb);
+            _unitOfWork.Save();
+            return RedirectToAction(nameof(Index));
+
+        }
+        public IActionResult Minus(int cartId)
+        {
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+
+            if (cartFromDb.Quantity <= 1)
+            {
+                _unitOfWork.ShoppingCart.Remove(cartFromDb);
+            }
+
+            else
+            {
+                cartFromDb.Quantity -= 1;
+                _unitOfWork.ShoppingCart.Update(cartFromDb);
+            }
+            _unitOfWork.Save();
+            return RedirectToAction(nameof(Index));
+
+        }
+
+        public IActionResult Remove(int cartId)
+        {
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+            _unitOfWork.ShoppingCart.Remove(cartFromDb);
+            _unitOfWork.Save();
+            return RedirectToAction(nameof(Index));
+        }
+
         private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
         {
             if (shoppingCart.Quantity <= 50)

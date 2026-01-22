@@ -10,5 +10,7 @@ namespace BookShop.Models.ViewModels
     {
         public IEnumerable<ShoppingCart> ShoppingCartList { get; set; }
         public double CartTotal { get; set; }
+
+       
     }
 }
