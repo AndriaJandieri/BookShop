@@ -49,7 +49,7 @@ namespace BookShopWeb.Areas.Customer.Controllers
             {
                 ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId,
                 includeProperties: "Product"), //Eager loading Product, its keysensitive to spelling, so be careful: use includeProperties exactly as defined Model in DbSet
-                OrderHeader = new()
+                OrderHeader = new(),
             };
 
             ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
@@ -60,8 +60,6 @@ namespace BookShopWeb.Areas.Customer.Controllers
             ShoppingCartVM.OrderHeader.City = ShoppingCartVM.OrderHeader.ApplicationUser.City;
             ShoppingCartVM.OrderHeader.State = ShoppingCartVM.OrderHeader.ApplicationUser.State;
             ShoppingCartVM.OrderHeader.PostalCode = ShoppingCartVM.OrderHeader.ApplicationUser.PostalCode;
-
-
 
             foreach (var cart in ShoppingCartVM.ShoppingCartList)
             {
