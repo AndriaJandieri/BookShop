@@ -86,7 +86,7 @@ namespace BookShopWeb.Areas.Customer.Controllers
             ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
             ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
 
-            ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
+            ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
 
             foreach (var cart in ShoppingCartVM.ShoppingCartList)
             {
@@ -94,7 +94,7 @@ namespace BookShopWeb.Areas.Customer.Controllers
                 ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Quantity);
             }
 
-            if (ShoppingCartVM.OrderHeader.ApplicationUser.CompanyId.GetValueOrDefault() == 0)
+            if (applicationUser.CompanyId.GetValueOrDefault() == 0)
             {
                 //its a regular customer
                 ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
@@ -122,9 +122,20 @@ namespace BookShopWeb.Areas.Customer.Controllers
                 _unitOfWork.Save();
             }
 
+            if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+            {
+                //its a regular customer
+                //stripe settings
+            }
 
-            return View(ShoppingCartVM);
+
+            return RedirectToAction(nameof(OrderConfirmation), new { Orderid = ShoppingCartVM.OrderHeader.Id });
         }
+        public IActionResult OrderConfirmation(int orderId)
+        {
+            return View(orderId);
+        }
+
 
         public IActionResult Plus(int cartId)
         {
