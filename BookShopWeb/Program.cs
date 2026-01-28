@@ -5,6 +5,7 @@ using BookShop.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,8 @@ builder.Services.AddDbContext<BookShopDbContext>(options =>
 //    options.User.RequireUniqueEmail = true;
 //});
 
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<BookShopDbContext>().AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -71,7 +74,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
+//StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"];
 app.UseAuthentication();
 app.UseAuthorization();
 
