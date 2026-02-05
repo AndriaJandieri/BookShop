@@ -5,6 +5,7 @@ using BookShop.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BookShopWeb.Areas.Admin.Controllers
 {
@@ -65,6 +66,17 @@ namespace BookShopWeb.Areas.Admin.Controllers
         public IActionResult GetAll(string status)
         {
             IEnumerable<OrderHeader> objOrderHeaders = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser").ToList();
+
+            if (User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Admin))
+            {
+                objOrderHeaders = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser").ToList();
+            }
+            else
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                objOrderHeaders = _unitOfWork.OrderHeader.GetAll(u => u.ApplicationUserId == userId, includeProperties: "ApplicationUser").ToList();
+            }
 
             switch (status.ToLower())
             {
