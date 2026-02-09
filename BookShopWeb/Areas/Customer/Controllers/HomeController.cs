@@ -23,6 +23,14 @@ namespace BookShopWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (claim != null)
+            {
+                HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value).Count());
+            }
+
             IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
             return View(productList);
         }
@@ -66,7 +74,7 @@ namespace BookShopWeb.Areas.Customer.Controllers
             }
             TempData["success"] = "Cart updated successfully";
             //_unitOfWork.ShoppingCart.Add(shoppingCart);
-            
+
 
             return RedirectToAction(nameof(Index));
         }
