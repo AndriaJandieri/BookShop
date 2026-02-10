@@ -5,6 +5,7 @@ using BookShop.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,6 +56,23 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = $"/Identity/Account/Login";
     options.LogoutPath = $"/Identity/Account/Logout";
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+});
+
+//builder.Services.AddAuthentication().AddFacebook(option =>
+//{
+//    option.AppId = "Authentication:Facebook:AppId";
+//    option.AppSecret = "Authentication:Facebook:AppSecret";
+//    //option.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+//});
+
+builder.Services.AddAuthentication().AddGoogle(option =>
+{
+    var googleAuth = builder.Configuration.GetSection("Authentication:Google");
+    option.ClientId = googleAuth["ClientId"];
+    option.ClientSecret = googleAuth["ClientSecret"];
+    //option.ClientId = "Authentication:Google:ClientId";
+    //option.ClientSecret = "Authentication:Google:ClientSecret";
+    //option.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 });
 
 builder.Services.AddDistributedMemoryCache();
