@@ -1,4 +1,5 @@
 using BookShop.DataAccess.Data;
+using BookShop.DataAccess.DbInitializer;
 using BookShop.DataAccess.Repository;
 using BookShop.DataAccess.Repository.IRepository;
 using BookShop.Utility;
@@ -33,20 +34,6 @@ builder.Services.AddDbContext<BookShopDbContext>(options =>
 //#endregion
 
 
-//builder.Services.Configure<IdentityOptions>(options =>
-//{
-//    options.Password.RequireDigit = true;
-//    options.Password.RequireLowercase = true;
-//    options.Password.RequireUppercase = true;
-//    options.Password.RequireNonAlphanumeric = false;
-//    options.Password.RequiredLength = 6;
-//    options.Password.RequiredUniqueChars = 1;
-//    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-//    options.Lockout.MaxFailedAccessAttempts = 5;
-//    options.Lockout.AllowedForNewUsers = true;
-//    options.User.RequireUniqueEmail = true;
-//});
-
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<BookShopDbContext>().AddDefaultTokenProviders();
@@ -58,21 +45,11 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 });
 
-//builder.Services.AddAuthentication().AddFacebook(option =>
-//{
-//    option.AppId = "Authentication:Facebook:AppId";
-//    option.AppSecret = "Authentication:Facebook:AppSecret";
-//    //option.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
-//});
-
 builder.Services.AddAuthentication().AddGoogle(option =>
 {
     var googleAuth = builder.Configuration.GetSection("Authentication:Google");
     option.ClientId = googleAuth["ClientId"];
     option.ClientSecret = googleAuth["ClientSecret"];
-    //option.ClientId = "Authentication:Google:ClientId";
-    //option.ClientSecret = "Authentication:Google:ClientSecret";
-    //option.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 });
 
 builder.Services.AddDistributedMemoryCache();
@@ -83,6 +60,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -105,6 +83,7 @@ StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretK
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
+SeedDatabase();
 app.MapStaticAssets();
 app.MapRazorPages();
 
@@ -115,3 +94,11 @@ app.MapControllerRoute(
 
 
 app.Run();
+void SeedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInitializer.Initialize();
+    }
+}
