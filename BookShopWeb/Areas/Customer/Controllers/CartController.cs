@@ -3,6 +3,7 @@ using BookShop.Models;
 using BookShop.Models.ViewModels;
 using BookShop.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
 using System.Security.Claims;
@@ -16,11 +17,13 @@ namespace BookShopWeb.Areas.Customer.Controllers
     {
 
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailSender _emailSender;
         [BindProperty]
         public ShoppingCartVM ShoppingCartVM { get; set; }
-        public CartController(IUnitOfWork unitOfWork)
+        public CartController(IUnitOfWork unitOfWork, IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
+            _emailSender = emailSender;
         }
 
 
@@ -191,6 +194,11 @@ namespace BookShopWeb.Areas.Customer.Controllers
                 HttpContext.Session.Clear();
 
             }
+            //Confirmation Email Sending
+            _emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email,
+                $"Your Order Confirmation – Order #{orderHeader.Id}",
+                $"<p>New Order Created - {orderHeader.Id}</p>");
+
 
             List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart
                 .GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
