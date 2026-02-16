@@ -1,10 +1,12 @@
-﻿using BookShop.DataAccess.Repository.IRepository;
+﻿using BookShop.DataAccess.Data;
+using BookShop.DataAccess.Repository.IRepository;
 using BookShop.Models;
 using BookShop.Models.ViewModels;
 using BookShop.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookShopWeb.Areas.Admin.Controllers
 {
@@ -12,13 +14,18 @@ namespace BookShopWeb.Areas.Admin.Controllers
     [Authorize(Roles = SD.Role_Admin)]
     public class UserController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        //private readonly IUnitOfWork _unitOfWork;
+        private readonly BookShopDbContext _db;
 
-        public UserController(IUnitOfWork unitOfWork)
+        //public UserController(IUnitOfWork unitOfWork)
+        //{
+        //    _unitOfWork = unitOfWork;
+        //}
+
+        public UserController(BookShopDbContext db)
         {
-            _unitOfWork = unitOfWork;
+            _db = db;
         }
-
 
         public IActionResult Index()
         {
@@ -28,24 +35,56 @@ namespace BookShopWeb.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<ApplicationUser> objCompanyList = _unitOfWork.ApplicationUser.GetAll().ToList();
-            return Json(new { data = objCompanyList });
-        }
+            List<ApplicationUser> objUserList = _db.ApplicationUsers.Include(u => u.Company).ToList();
 
-        [HttpDelete]
-        public IActionResult Delete(int? id)
-        {
-            var CompanyToBeDeleted = _unitOfWork.Company.Get(u => u.Id == id);
+            var userRoles = _db.UserRoles.ToList();
+            var roles = _db.Roles.ToList();
 
-            if (CompanyToBeDeleted == null)
+            foreach (var obj in objUserList)
             {
-                return Json(new { success = false, message = "Error while deleting" });
+                var roleId = userRoles.FirstOrDefault(u => u.UserId == obj.Id)?.RoleId;
+                obj.Role = roles.FirstOrDefault(r => r.Id == roleId).Name;
+
+                obj.Status = obj.LockoutEnd != null && obj.LockoutEnd > DateTime.Now ? "Locked" : "Active";
+
+                if (obj.Company == null)
+                {
+                    obj.Company = new Company()
+                    {
+                        Name = ""
+                    };
+                }
             }
 
-            _unitOfWork.Company.Remove(CompanyToBeDeleted);
-            _unitOfWork.Save();
-            return Json(new { success = true, message = "Delete Successful" });
+            return Json(new { data = objUserList });
+        }
 
+        [HttpPost]
+        public IActionResult LockUnlock([FromBody] string id)
+        {
+            var objFromDb = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+            if (objFromDb == null)
+            {
+                return Json(new { success = false, message = "Error while Locking/Unlocking" });
+            }
+
+            //while using DateTime.Now best practice is to use DateTime.UtcNow instead
+
+            if (objFromDb.LockoutEnd != null && objFromDb.LockoutEnd > DateTime.Now)
+            {
+                // user is currently locked, we will unlock them
+                objFromDb.LockoutEnd = DateTime.Now;
+            }
+            else
+            {
+                // user is currently unlocked, we will lock them
+                objFromDb.LockoutEnd = DateTime.Now.AddYears(100);
+            }
+
+            _db.SaveChanges();
+
+
+            return Json(new { success = true, message = "Operation Successful" });
         }
 
 

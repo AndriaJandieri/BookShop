@@ -23,6 +23,10 @@ namespace BookShop.Models
         [ForeignKey("CompanyId")]
         [ValidateNever]
 
-        public Company Company { get; set; }
+        public Company? Company { get; set; }
+        [NotMapped]
+        public string Role { get; set; }
+        [NotMapped]
+        public string Status { get; set; }
     }
 }
