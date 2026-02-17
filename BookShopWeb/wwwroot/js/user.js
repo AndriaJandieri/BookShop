@@ -42,7 +42,7 @@ function loadDataTable() {
                            <a/>
                            
                            <a class="btn btn-danger text-white" style="cursor:pointer; width:125px;">
-                              <i class="bi bi-lock-fill"></i> Permission</a>
+                              <i class="bi bi-pencil-square"></i> Permission</a>
                            <a/>
                         </div>`
                     }
@@ -54,7 +54,7 @@ function loadDataTable() {
                               <i class="bi bi-lock-fill"></i> Lock</a>
                            <a/>
                            <a class="btn btn-danger text-white" style="cursor:pointer; width:125px;">
-                              <i class="bi bi-lock-fill"></i> Permission</a>
+                              <i class="bi bi-pencil-square"></i> Permission</a>
                            <a/>
                         </div>`
                     }
