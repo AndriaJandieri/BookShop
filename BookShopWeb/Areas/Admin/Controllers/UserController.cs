@@ -4,6 +4,7 @@ using BookShop.Models;
 using BookShop.Models.ViewModels;
 using BookShop.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,21 +17,105 @@ namespace BookShopWeb.Areas.Admin.Controllers
     {
         //private readonly IUnitOfWork _unitOfWork;
         private readonly BookShopDbContext _db;
+        private readonly UserManager<IdentityUser> _userManager;
 
         //public UserController(IUnitOfWork unitOfWork)
         //{
         //    _unitOfWork = unitOfWork;
         //}
 
-        public UserController(BookShopDbContext db)
+        public UserController(BookShopDbContext db, UserManager<IdentityUser> userManager)
         {
             _db = db;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
         {
             return View();
         }
+
+        public IActionResult RoleManagement(string userId)
+        {
+            var user = _db.ApplicationUsers
+                .Include(u => u.Company)
+                .FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+                return NotFound();
+
+            var userRole = _db.UserRoles
+                .FirstOrDefault(u => u.UserId == userId);
+
+            string roleName = "";
+
+            if (userRole != null)
+            {
+                var role = _db.Roles
+                    .FirstOrDefault(r => r.Id == userRole.RoleId);
+
+                roleName = role?.Name ?? "";
+            }
+
+            RoleManagementVM RoleVM = new RoleManagementVM()
+            {
+                ApplicationUser = user,
+                RoleList = _db.Roles.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Name
+                }),
+                CompanyList = _db.Companies.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                }),
+            };
+
+            RoleVM.ApplicationUser.Role = roleName;
+
+            return View(RoleVM);
+        }
+        [HttpPost]
+        public async Task<IActionResult> RoleManagement(RoleManagementVM roleManagementVM)
+        {
+            var applicationUser = await _db.ApplicationUsers
+                .FirstOrDefaultAsync(u => u.Id == roleManagementVM.ApplicationUser.Id);
+
+            if (applicationUser == null)
+                return NotFound();
+
+            var roles = await _userManager.GetRolesAsync(applicationUser);
+            string oldRole = roles.FirstOrDefault(); // may be null
+
+            if (oldRole != roleManagementVM.ApplicationUser.Role)
+            {
+                // If user had a role before, remove it
+                if (!string.IsNullOrEmpty(oldRole))
+                {
+                    await _userManager.RemoveFromRoleAsync(applicationUser, oldRole);
+                }
+
+                // Add new role
+                await _userManager.AddToRoleAsync(applicationUser, roleManagementVM.ApplicationUser.Role);
+
+                // Handle company logic
+                if (roleManagementVM.ApplicationUser.Role == SD.Role_Company)
+                {
+                    applicationUser.CompanyId = roleManagementVM.ApplicationUser.CompanyId;
+                }
+                else
+                {
+                    applicationUser.CompanyId = null;
+                }
+
+                await _db.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
         #region API CALLS
         [HttpGet]
         public IActionResult GetAll()
@@ -42,18 +127,23 @@ namespace BookShopWeb.Areas.Admin.Controllers
 
             foreach (var obj in objUserList)
             {
-                var roleId = userRoles.FirstOrDefault(u => u.UserId == obj.Id)?.RoleId;
-                obj.Role = roles.FirstOrDefault(r => r.Id == roleId).Name;
+                var userRole = userRoles.FirstOrDefault(u => u.UserId == obj.Id);
 
-                obj.Status = obj.LockoutEnd != null && obj.LockoutEnd > DateTime.Now ? "Locked" : "Active";
-
-                if (obj.Company == null)
+                if (userRole != null)
                 {
-                    obj.Company = new Company()
-                    {
-                        Name = ""
-                    };
+                    var role = roles.FirstOrDefault(r => r.Id == userRole.RoleId);
+                    obj.Role = role?.Name ?? "";
                 }
+                else
+                {
+                    obj.Role = "";
+                }
+
+                obj.Status = obj.LockoutEnd != null && obj.LockoutEnd > DateTime.Now
+                    ? "Locked"
+                    : "Active";
+
+                obj.Company ??= new Company { Name = "" };
             }
 
             return Json(new { data = objUserList });
