@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Product>;
+﻿@model IEnumerable<Product>
 
 <div class="row pb-3">
 
@@ -8,6 +8,16 @@
             <div class="row p-2">
                 <div class="col-23 p1">
                     <div class="card border-0 p-3 shadow border-top border-5 rounded">
+                        @if (product.ProductImages != null && product.ProductImages.Count() > 0)
+                        {
+                            <img src="@product.ProductImages.FirstOrDefault().ImageUrl" class="card-img-top rounded" />
+                        }
+                        else
+                        {
+                            <img src="https://placehold.co/500x600/1a1a1a/e0e0e0/png?text=No%20Image" class="card-img-top rounded" />
+                        }
+
+
                         @* <img src="@product.ImageUrl" class="card-img-top rounded" /> *@
                         <div class="card-body pb-0">
                             <div class="pl-1">
@@ -32,8 +42,8 @@
                             </div>
                         </div>
                         <a asp-action="Details"
-                        asp-route-productId="@product.Id"
-                        class="btn btn-primary bg-gradient border-0 form-control">
+                           asp-route-productId="@product.Id"
+                           class="btn btn-primary bg-gradient border-0 form-control">
                             Details
                         </a>
                     </div>
